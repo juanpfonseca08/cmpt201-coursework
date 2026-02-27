@@ -1,8 +1,9 @@
-#include <assert.h>
-#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <assert.h>
+
 
 #define ASSERT(expr)                                                           \
   {                                                                            \
@@ -21,6 +22,7 @@
       printf("Test passed: %s\n", #expr);                                      \
     }                                                                          \
   }
+
 
 typedef struct node {
   uint64_t data;

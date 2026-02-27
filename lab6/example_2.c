@@ -1,5 +1,3 @@
-#include <assert.h>
-#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,8 +15,6 @@
     if (!(expr)) {                                                             \
       fprintf(stderr, "Test failed: %s\n", #expr);                             \
       exit(1);                                                                 \
-    } else {                                                                   \
-      printf("Test passed: %s\n", #expr);                                      \
     }                                                                          \
   }
 
@@ -27,29 +23,43 @@ typedef struct node {
   struct node *next;
 } node_t;
 
+typedef struct info {
+  uint64_t sum;
+} info_t;
+
 node_t *head = NULL;
+info_t info = {0};
 
 void insert_sorted(uint64_t data) {
   node_t *new_node = malloc(sizeof(node_t));
-  ASSERT(new_node != NULL);
-
   new_node->data = data;
   new_node->next = NULL;
 
-  if (head == NULL || data < head->data) {
+  if (head == NULL) {
+    head = new_node;
+  } else if (data < head->data) {
     new_node->next = head;
     head = new_node;
-    return;
+  } else {
+    node_t *curr = head;
+    node_t *prev = NULL;
+
+    while (curr != NULL) {
+      if (data < curr->data) {
+        break;
+      }
+
+      prev = curr;
+      curr = curr->next;
+    }
+
+    prev->next = new_node;
+    if (curr != NULL) {
+      new_node->next = curr->next;
+    }
   }
 
-  node_t *curr = head;
-
-  while (curr->next != NULL && curr->next->data < data) {
-    curr = curr->next;
-  }
-
-  new_node->next = curr->next;
-  curr->next = new_node;
+  info.sum += data;
 }
 
 int index_of(uint64_t data) {
@@ -60,6 +70,7 @@ int index_of(uint64_t data) {
     if (curr->data == data) {
       return index;
     }
+
     curr = curr->next;
     index++;
   }
@@ -69,16 +80,12 @@ int index_of(uint64_t data) {
 
 int main() {
   insert_sorted(1);
-  insert_sorted(2);
-  insert_sorted(5);
   insert_sorted(3);
+  insert_sorted(5);
+  insert_sorted(2);
 
-  TEST(index_of(3) == 2);
-
-  insert_sorted(0);
-  insert_sorted(4);
-
-  TEST(index_of(4) == 4);
+  TEST(info.sum == 1 + 3 + 5 + 2);
+  TEST(index_of(2) == 1);
 
   return 0;
 }

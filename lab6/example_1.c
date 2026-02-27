@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -31,25 +30,26 @@ node_t *head = NULL;
 
 void insert_sorted(uint64_t data) {
   node_t *new_node = malloc(sizeof(node_t));
-  ASSERT(new_node != NULL);
-
   new_node->data = data;
   new_node->next = NULL;
 
-  if (head == NULL || data < head->data) {
-    new_node->next = head;
+  if (head == NULL) {
     head = new_node;
-    return;
+  } else {
+    node_t *curr = head;
+    node_t *prev = NULL;
+
+    bool inserted = false;
+    while (curr != NULL && !inserted) {
+      if (data < curr->data) {
+        prev->next = new_node;
+        new_node->next = curr;
+        inserted = true;
+      }
+      prev = curr;
+      curr = curr->next;
+    }
   }
-
-  node_t *curr = head;
-
-  while (curr->next != NULL && curr->next->data < data) {
-    curr = curr->next;
-  }
-
-  new_node->next = curr->next;
-  curr->next = new_node;
 }
 
 int index_of(uint64_t data) {
@@ -60,6 +60,7 @@ int index_of(uint64_t data) {
     if (curr->data == data) {
       return index;
     }
+
     curr = curr->next;
     index++;
   }
