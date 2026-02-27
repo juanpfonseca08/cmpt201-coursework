@@ -1,13 +1,13 @@
-#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #define ASSERT(expr)                                                           \
   {                                                                            \
     if (!(expr)) {                                                             \
       fprintf(stderr, "Assertion failed: %s\n", #expr);                        \
-      fprintf(stderr, "File: %s, Line: %d\n", __FILE__, __LINE__);             \
+      fprintf(stderr, "File: %s, Line: %d\n", __FILE__, __LINE__);            \
       exit(1);                                                                 \
     }                                                                          \
   }
@@ -21,6 +21,7 @@
       printf("Test passed: %s\n", #expr);                                      \
     }                                                                          \
   }
+
 
 typedef struct node {
   uint64_t data;
@@ -67,6 +68,7 @@ int index_of_example1(uint64_t data) {
   return -1;
 }
 
+
 typedef struct info {
   uint64_t sum;
 } info_t;
@@ -95,10 +97,12 @@ void insert_sorted_example2(uint64_t data) {
 
   if (head2 == NULL) {
     head2 = new_node;
-  } else if (data < head2->data) {
+  } 
+  else if (data < head2->data) {
     new_node->next = head2;
     head2 = new_node;
-  } else {
+  } 
+  else {
     node_t *curr = head2;
     node_t *prev = NULL;
 
@@ -108,7 +112,7 @@ void insert_sorted_example2(uint64_t data) {
     }
 
     prev->next = new_node;
-    new_node->next = curr; // fixed bug
+    new_node->next = curr;   // fixed bug
   }
 
   info.sum += data;
